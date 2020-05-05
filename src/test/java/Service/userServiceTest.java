@@ -14,8 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
-import java.util.Optional;
-
 import static java.util.Optional.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isNotNull;
@@ -34,6 +32,8 @@ public class userServiceTest {
 
     private User user;
 
+
+
     @Before
     public void setUp() throws Exception {
         sut = new UserServiceImp(userRepository);
@@ -42,9 +42,9 @@ public class userServiceTest {
         user.setEmail(EMAIL);
         user.setName(NOME);
         user.setPassword("1234");
-        user.setTokenAccess(TOKEN);
-        when(userRepository.findByToken(TOKEN)).thenReturn(empty());
-        when(userRepository.findByEmail(EMAIL)).thenReturn(empty());
+       // user.setTokenAccess(TOKEN);
+       // when(userRepository.findByTokenAccess(TOKEN)).thenReturn(empty());
+        //when(userRepository.findByEmail(EMAIL)).thenReturn(empty());
     }
 
     @Test
@@ -55,13 +55,13 @@ public class userServiceTest {
     }
     @Test(expected = UnicidadeEmailException.class)
     public void nao_deve_salvar_usuario_com_mesmo_email() throws Exception{
-        when(userRepository.findByEmail(EMAIL)).thenReturn(of(user));
+        when(userRepository.findByEmail(EMAIL)).thenReturn(user);
         sut.userSave(user);
     }
 
     @Test(expected = unicidadeTokenException.class)
     public void nao_deve_salvar_usuario_com_mesmo_token() throws Exception {
-        when(userRepository.findByToken(TOKEN)).thenReturn(of(user));
+      //  when(userRepository.findByTokenAccess(TOKEN)).thenReturn(of(user));
         sut.userSave(user);
 
     }
@@ -73,7 +73,7 @@ public class userServiceTest {
     }
     @Test
     public void deve_buscar_usuario_pelo_email () throws Exception {
-        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(EMAIL)).thenReturn(user);
         User usuarioTeste = sut.SearchByEmail(EMAIL);
         verify(userRepository).findByEmail(EMAIL);
         assertThat(usuarioTeste).isNotNull();

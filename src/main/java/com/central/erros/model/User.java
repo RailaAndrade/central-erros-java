@@ -2,19 +2,26 @@ package com.central.erros.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
 @Table(name="user")
-public class User {
+public class User implements UserDetails {
+
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull
@@ -28,19 +35,25 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    /*
+    @Column
     private String tokenAccess;
+*/
 
-    @OneToMany(mappedBy = "user")
-    private List<Log> log;
-    public String getTokenAccess() {
+    @JsonIgnore
+    @OneToMany(mappedBy="user")
+    private Set<Log> log;
+
+   /* public String getTokenAccess() {
         return tokenAccess;
     }
+
+
 
     public void setTokenAccess(String tokenAccess) {
         this.tokenAccess = tokenAccess;
     }
-
+*/
     public Long getId() {
         return id;
     }
@@ -65,19 +78,62 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public List<Log> getLog() {
+   // public List<Log> getLog() {
+   //     return log;
+    //}
+
+    //public void setLog(List<Log> log) {
+      //  this.log = log;
+   // }
+
+
+    public Set<Log> getLog() {
         return log;
     }
 
-    public void setLog(List<Log> log) {
+
+
+    public void setLog(Set<Log> log) {
         this.log = log;
     }
 
